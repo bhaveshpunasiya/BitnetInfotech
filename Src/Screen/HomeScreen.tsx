@@ -1,37 +1,101 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import { verticalScale } from '../utils/scaling'
-import colors from '../utils/Colors'
-import { useNavigation } from '@react-navigation/native'
+import React, { useState } from 'react';
+import {
+  View,
+  ScrollView,
+} from 'react-native';
+import { images } from '../utils/Images';
+import CommonHeader from '../Component/CommonHeader';
+import SearchBarComman from '../Component/SearchBarComman';
+import SectionHeader from '../Component/SectionHeader';
+import { useNavigation } from '@react-navigation/native';
+import { categories, dropdownData, mainarr } from '../StaticData';
+import { HomeScreenStyle } from '../Style/HomeScreenStyle';
+import HorizontalList from '../Component/HorizontalList';
+import CategoryListComman from '../Component/CategoryListComman';
+
 
 const HomeScreen = () => {
-    const navigation = useNavigation();
-const logout = ()=>{
-  navigation.reset({
-    index: 0,
-    routes: [
-      {
-        name: "LoginScreen"
-      }
-    ]
-  });
-  
-}
+
+  const navigation = useNavigation<any>()
+
+  const [selectedDropdownValue, setSelectedDropdownValue] = useState<string>('men');
+  const [searchValue, setSearchValue] = useState('');
+
+
+  const handleDropdownChange = (item: { label: string; value: string }) => {
+    setSelectedDropdownValue(item.value);
+    console.log('Selected:', item);
+  };
+
+  const renderHorizontalList = (productList: any[]) => (
+    <HorizontalList
+      data={productList}
+      containerStyle={{ marginBottom: 16 }}
+      itemStyle={HomeScreenStyle.productCardSelling}
+      imageStyle={HomeScreenStyle.productImage}
+      nameStyle={HomeScreenStyle.productName}
+      priceStyle={HomeScreenStyle.productPrice}
+      iconName="heart-outline"
+      iconSize={25}
+      iconStyle={{ color: '#000' }}
+    />
+  );
+
+  const RenderCategories = () => {
+    return (
+    <CategoryListComman
+      data={categories}
+      itemStyle={HomeScreenStyle.categoryCard}
+      imageStyle={HomeScreenStyle.categoryImage}
+      nameStyle={HomeScreenStyle.categoryName}
+    />
+  )
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={{color:"black"}}>Login SuccessFull</Text>
-      <TouchableOpacity onPress={logout}>
+    <ScrollView
+      contentContainerStyle={HomeScreenStyle.contentContainer} 
+      showsVerticalScrollIndicator={false} 
+    >
+      <View style={HomeScreenStyle.headerContainer}>
+        <CommonHeader
+          profileImage={images.ProfileHeader}
+          dropdownData={dropdownData}
+          selectedDropdownValue={selectedDropdownValue}
+          onDropdownChange={handleDropdownChange}
+        />
+      </View>
+  
+      <View style={HomeScreenStyle.searchbarContainer}>
+        <SearchBarComman
+          placeholder="Search"
+          value={searchValue}
+          onChangeText={(text) => setSearchValue(text)}
+        />
+      </View>
+  
+      <View style={HomeScreenStyle.categoriesSection}>
+        <SectionHeader
+          sectionHeaderStyle={HomeScreenStyle.sectionHeaderStyle}
+          title="Categories"
+          onPressSeeAll={() => navigation.navigate("ListScreen",{categories})}
+        />
+        <RenderCategories/>
+      </View>
+  
+      {mainarr?.map((section, index) => (
+        <View key={index} style={HomeScreenStyle.section}>
+          <SectionHeader
+            sectionHeaderStyle={HomeScreenStyle.sectionHeaderStyle}
+            title={section.name}
+            onPressSeeAll={() => {}}
+          />
+          {renderHorizontalList(section.productList)}
+        </View>
+      ))}
+    </ScrollView>
+  );
+};
 
-      <Text style={styles.logoutbtn}>LogOut</Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
 
-export default HomeScreen
-
-const styles = StyleSheet.create({
-  container:{flex:1,justifyContent:"center",alignItems:"center"},
-  logoutbtn:{color:"black",marginTop:verticalScale(30),color:colors.blue,fontSize:18,fontWeight:"bold"}
-})
+export default HomeScreen;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, ToastAndroid } from 'react-native';
+import { View, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, ToastAndroid, BackHandler } from 'react-native';
 import CommanFlotingTextInput from '../Component/CommanFlotingTextInput';
 import CommonButton from '../Component/CommonButton';
 import CommonText from '../Component/CommanBoldTxt';
@@ -10,7 +10,7 @@ import Commantxtbtm from '../Component/Commantxtbtm';
 import auth from '@react-native-firebase/auth';
 import { EmailRegex } from '../utils/EmailRegex';
 import { AUTHERRORCODES } from '../utils/FirebaseMessage';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LoginProps {}
 
@@ -22,15 +22,45 @@ const LoginScreen: React.FC<LoginProps> = (props) => {
   const [password, setPassword] = useState('');
   const [data, setData] = useState<any>()
 
+
   useEffect(() => {
     if (isPress && data?.user?.emailVerified && showPassword) {
-      navigation.navigate("HomeScreen")
+      IsUser()
     }
     else if (true && data?.user?.emailVerified == false) {
       ToastAndroid.show("Please Verify Email", 10)
     }
   }, [data?.user])
 
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (showPassword) {
+        setShowPassword(false);
+        return true; 
+      }
+      return false; 
+    };
+
+    if (showPassword) {
+      BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    }
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [showPassword]);
+
+  const IsUser = async () =>{
+    navigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: "BottomNavigation"
+        }
+      ]
+    });
+    await AsyncStorage.setItem('isLogin', "true");
+  }
   const handleEmailBtn = () => {
     const EmaiIsValid = EmailRegex(email)
     if (EmaiIsValid) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { StyleSheet, View, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown'; // Correct import
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Correct icon import
 import colors from '../utils/Colors';
@@ -12,6 +12,8 @@ interface CommonDropdownProps {
   placeholder: string;
   containerStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
+  dropdownStyles?: any;
+  selectedTextStyle?: StyleProp<TextStyle>; 
 }
 
 const CommonDropdown: React.FC<CommonDropdownProps> = ({
@@ -20,25 +22,26 @@ const CommonDropdown: React.FC<CommonDropdownProps> = ({
   onChange,
   placeholder,
   containerStyle,
-  labelStyle
+  labelStyle,
+  dropdownStyles,
+  selectedTextStyle, 
 }) => {
-
-    console.log(data,"data====")
+  console.log(data, "data====");
   return (
     <View style={[styles.container, containerStyle]}>
       <Dropdown
-      itemTextStyle={{color:colors.black}}
-      selectedTextStyle={{color:colors.black}}
         data={data}
         value={value}
-        labelField={"label"}
-        valueField={"value"}
+        labelField="label"
+        valueField="value"
         onChange={onChange}
-        style={styles.dropdown}
-        placeholder="Select an item"
+        style={[styles.dropdown, dropdownStyles]}
+        placeholder={placeholder}
         renderRightIcon={() => (
           <Ionicons name="chevron-down-outline" size={20} color={colors.black} />
         )}
+        selectedTextStyle={[styles.defaultSelectedTextStyle, selectedTextStyle]} 
+        itemTextStyle={{ color: colors.black }}
         dropdownStyle={styles.dropdownStyle}
       />
     </View>
@@ -51,19 +54,18 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: moderateScale(16),
   },
-  label: {
-    fontSize: moderateScale(14),
-    color: colors.commantxt,
-    marginBottom: moderateScale(8),
-  },
   dropdown: {
     backgroundColor: colors.inputgraybg,
     borderColor: colors.inputgraybg,
     borderWidth: 1,
-    borderRadius:moderateScale(30),
-    paddingHorizontal:horizontalScale(15),
+    borderRadius: moderateScale(30),
+    paddingHorizontal: horizontalScale(15),
     height: moderateScale(56),
     justifyContent: 'center',
+  },
+  defaultSelectedTextStyle: {
+    color: colors.black,
+    fontSize: moderateScale(14),
   },
   dropdownStyle: {
     backgroundColor: colors.white,

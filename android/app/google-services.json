@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "357639530175",
+    "project_id": "bitnet-727c4",
+    "storage_bucket": "bitnet-727c4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357639530175:android:54befcf2e159c98370080a",
+        "android_client_info": {
+          "package_name": "com.bitnetinfotech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "357639530175-93lm8avbif576klr7ov7arp88c4pqelb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bitnetinfotech",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "357639530175-lgb1hi8uu86a1ngbh8jsm51p5mntb1ff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKznxcZJijvWL4tVgqc8NcQpN0vBnENLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "357639530175-lgb1hi8uu86a1ngbh8jsm51p5mntb1ff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

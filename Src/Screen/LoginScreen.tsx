@@ -1,37 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, Alert, ImageBackground, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, ToastAndroid } from 'react-native';
+import { View, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, ToastAndroid } from 'react-native';
 import CommanFlotingTextInput from '../Component/CommanFlotingTextInput';
 import CommonButton from '../Component/CommonButton';
-import colors from '../utils/Colors';
-import { moderateScale, verticalScale } from '../utils/scaling';
-import { fontStyles } from '../utils/Fonts';
 import CommonText from '../Component/CommanBoldTxt';
-import CommonLinkText from '../Component/CommonLinkText';
 import { LoginScreenStyle } from '../Style/LoginScreenStyle';
 import { useNavigation } from '@react-navigation/native'
 import { images } from '../utils/Images';
 import Commantxtbtm from '../Component/Commantxtbtm';
+import auth from '@react-native-firebase/auth';
+import { EmailRegex } from '../utils/EmailRegex';
+import { AUTHERRORCODES } from '../utils/FirebaseMessage';
 
-interface LoginProps {
 
-}
+interface LoginProps {}
 
 const LoginScreen: React.FC<LoginProps> = (props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [isPress, setIsPress] = useState(false)
-  const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState('');
+  const [data, setData] = useState<any>()
 
+  useEffect(() => {
+    if (isPress && data?.user?.emailVerified && showPassword) {
+      navigation.navigate("HomeScreen")
+    }
+    else if (true && data?.user?.emailVerified == false) {
+      ToastAndroid.show("Please Verify Email", 10)
+    }
+  }, [data?.user])
 
   const handleEmailBtn = () => {
-    if (!email) {
-      ToastAndroid.show("Please enter both email and password.", 10)
-      return;
-    }
-    else {
-      setIsPress(true)
+    const EmaiIsValid = EmailRegex(email)
+    if (EmaiIsValid) {
+      setShowPassword(true)
     }
   };
+  const handleSignInBtn = () => {
+    setIsPress(true)
+    auth().signInWithEmailAndPassword(email,password)
+      .then((res) => {
+        setData(res)
+        console.log(res?.user, ' signed in!');
+      })
+      .catch(error => {
+        if (error.code == AUTHERRORCODES?.INVALID_EMAIL|| error.code == AUTHERRORCODES?.INVALID_IDP_RESPONSE || error.code == AUTHERRORCODES?.INVALID_PASSWORD) {
+          ToastAndroid.show("invalid Credetial", 10)
+        }
+      });
+  }
+
+  const handleSignUpWithGoogle = ()=>{
+    console.log("handleSignUpWithGoogle")
+  }
 
   return (
     <SafeAreaView style={LoginScreenStyle.container}>
@@ -43,23 +65,23 @@ const LoginScreen: React.FC<LoginProps> = (props) => {
           <View style={LoginScreenStyle.loginContainer}>
             <CommonText text={'Sign in'} />
             <CommanFlotingTextInput
-              placeholder={!isPress ? "Email Address" : "Password"}
-              value={!isPress ? email : password}
-              onChangeText={!isPress ? setEmail : setPassword}
-              keyboardType={!isPress ?"email-address":"default"}
+              placeholder={!showPassword ? "Email Address" : "Password"}
+              value={!showPassword ? email : password}
+              onChangeText={!showPassword ? setEmail : setPassword}
+              keyboardType={!showPassword ? "email-address" : "default"}
               containerStyle={LoginScreenStyle.inputContainer}
             />
-            <CommonButton loading={false} title={'Continue'} onPress={handleEmailBtn} />
+            <CommonButton loading={false} title={'Continue'} onPress={ !showPassword ? handleEmailBtn : handleSignInBtn} />
             {
-              !isPress ?
+              !showPassword ?
                 <Commantxtbtm containerStyle={LoginScreenStyle.containerTxt} primaryText={'Dont have an Account ?'} onPress={() => navigation.navigate("CreateAccount")} secondaryText={'Create One'} /> :
                 <Commantxtbtm containerStyle={LoginScreenStyle.containerTxt} primaryText={'Forgot Password ? '} onPress={() => navigation.navigate("ForgotPassword")} secondaryText={'Reset'} />
             }
             {
-              !isPress ?
+              !showPassword ?
                 <View style={LoginScreenStyle.btnContainer} >
                   <CommonButton textStyle={LoginScreenStyle.btntxt} buttonStyle={LoginScreenStyle.btn} imageSource={images.iosImage} loading={false} title={'Continue With Apple'} onPress={() => { }} />
-                  <CommonButton textStyle={LoginScreenStyle.btntxt} buttonStyle={LoginScreenStyle.btn} imageSource={images.Google} loading={false} title={'Continue With Google'} onPress={() => { }} />
+                  <CommonButton textStyle={LoginScreenStyle.btntxt} buttonStyle={LoginScreenStyle.btn} imageSource={images.Google} loading={false} title={'Continue With Google'} onPress={handleSignUpWithGoogle} />
                   <CommonButton textStyle={LoginScreenStyle.btntxt} buttonStyle={LoginScreenStyle.btn} imageSource={images.Facebook} loading={false} title={'Continue With Facebook'} onPress={() => { }} />
                 </View>
                 : null
@@ -73,3 +95,4 @@ const LoginScreen: React.FC<LoginProps> = (props) => {
 };
 
 export default LoginScreen;
+

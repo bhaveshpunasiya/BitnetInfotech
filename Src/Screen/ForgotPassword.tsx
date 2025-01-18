@@ -1,60 +1,87 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, Alert, ImageBackground, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, ToastAndroid } from 'react-native';
+import {
+  SafeAreaView,
+  KeyboardAvoidingView,
+  ScrollView,
+  View,
+  Platform,
+  ToastAndroid,
+  Alert,
+  Image,
+} from 'react-native';
 import CommanFlotingTextInput from '../Component/CommanFlotingTextInput';
 import CommonButton from '../Component/CommonButton';
-import colors from '../utils/Colors';
-import { horizontalScale, moderateScale, verticalScale } from '../utils/scaling';
-import { fontStyles } from '../utils/Fonts';
 import CommonText from '../Component/CommanBoldTxt';
-import CommonLinkText from '../Component/CommonLinkText';
-import { ForgotPasswordStyle } from '../Style/ForgotPasswordStyle';
-import { CommonActions, useNavigation } from '@react-navigation/native'
-import { images } from '../utils/Images';
-import Commantxtbtm from '../Component/Commantxtbtm';
 import CircleImageButton from '../Component/ComponentBackImage';
+import { ForgotPasswordStyle } from '../Style/ForgotPasswordStyle';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import { images } from '../utils/Images';
+import { AUTHERRORCODES } from '../utils/FirebaseMessage';
+import CommanToast from '../utils/CommanToast';
 
-interface LoginProps {
-
-}
-
-const ForgotPassword: React.FC<LoginProps> = (props) => {
+const ForgotPassword = () => {
   const navigation = useNavigation();
-  const [isPress, setIsPress] = useState(true)
+  const [isPress, setIsPress] = useState(false);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
+  useEffect(()=>{
+    // console.log("toast work")
+  CommanToast("test");
+})
 
-  const handleEmailBtn = () => {
+  const handleSendResetEmail = async () => {
     if (!email) {
-      ToastAndroid.show("Please enter both email and password.", 10)
+      ToastAndroid.show('Please enter your email address.', ToastAndroid.SHORT);
       return;
     }
-    else {
-      setIsPress(true)
+
+    try {
+      const sentReset = await auth().sendPasswordResetEmail(email);
+      setIsPress(true);
+      ToastAndroid.show(
+        'Password reset email sent! Check your inbox.',
+        ToastAndroid.SHORT
+      );
+    } catch (error) {
+      if (error.code === AUTHERRORCODES?.USER_DELETED) {
+        ToastAndroid.show("User Not Found",10)
+      } else if (error.code === AUTHERRORCODES?.INVALID_EMAIL) {
+        Alert.alert('Error', 'Invalid email address.');
+      } else {
+        Alert.alert('Error', 'Something went wrong. Please try again later.');
+      }
+      console.error(error);
     }
   };
-  
+
   const handleReturnLogin = () => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: 'LoginScreen' }], 
+        routes: [{ name: 'LoginScreen' }],
       })
     );
   };
 
-
   if (isPress) {
     return (
       <SafeAreaView style={ForgotPasswordStyle.container}>
-          <View style={ForgotPasswordStyle.sentMailcontainer}>
-            <Image source={images.SentMail} style={ForgotPasswordStyle.image}></Image>
-            <CommonText textStyle={ForgotPasswordStyle.commanTxt} text={'We Sent you an Email to reset your password.'} />
-            
-            <CommonButton buttonStyle={ForgotPasswordStyle.btn} loading={false} title={'Return to Login'} onPress={handleReturnLogin} />
-          </View>
+        <View style={ForgotPasswordStyle.sentMailcontainer}>
+          <Image source={images.SentMail} style={ForgotPasswordStyle.image} />
+          <CommonText
+            textStyle={ForgotPasswordStyle.commanTxt}
+            text={'We sent you an email to reset your password.'}
+          />
+          <CommonButton
+            buttonStyle={ForgotPasswordStyle.btn}
+            loading={false}
+            title={'Return to Login'}
+            onPress={handleReturnLogin}
+          />
+        </View>
       </SafeAreaView>
-    )
+    );
   }
 
   return (
@@ -63,18 +90,28 @@ const ForgotPassword: React.FC<LoginProps> = (props) => {
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={ForgotPasswordStyle.inputContainers}>
-            <CircleImageButton containerStyle={ForgotPasswordStyle.containerStyle} onPress={() => navigation.goBack()} />
+            <CircleImageButton
+              containerStyle={ForgotPasswordStyle.containerStyle}
+              onPress={() => navigation.goBack()}
+            />
             <CommonText text={'Forgot Password'} />
             <CommanFlotingTextInput
-              placeholder={"Email Address"}
+              placeholder={'Email Address'}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               containerStyle={ForgotPasswordStyle.inputContainer}
             />
-            <CommonButton loading={false} title={'Continue'} onPress={handleEmailBtn} />
+            <CommonButton
+              loading={false}
+              title={'Continue'}
+              onPress={handleSendResetEmail}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -83,4 +120,3 @@ const ForgotPassword: React.FC<LoginProps> = (props) => {
 };
 
 export default ForgotPassword;
-

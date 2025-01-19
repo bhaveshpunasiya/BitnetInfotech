@@ -106,7 +106,6 @@ const LoginScreen: React.FC<LoginProps> = (props) => {
       const googleCredentials = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredentials);
   
-      // console.log("User signed in successfully");
       IsUser();
     } catch (error) {
       console.error("Error during Google Sign-In:", error);

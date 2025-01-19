@@ -6,7 +6,6 @@ import {
   View,
   Platform,
   ToastAndroid,
-  Alert,
   Image,
 } from 'react-native';
 import CommanFlotingTextInput from '../Component/CommanFlotingTextInput';
@@ -18,17 +17,12 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { images } from '../utils/Images';
 import { AUTHERRORCODES } from '../utils/FirebaseMessage';
-import CommanToast from '../utils/CommanToast';
 
 const ForgotPassword = () => {
   const navigation = useNavigation();
   const [isPress, setIsPress] = useState(false);
   const [email, setEmail] = useState('');
 
-  useEffect(()=>{
-    // console.log("toast work")
-  CommanToast("test");
-})
 
   const handleSendResetEmail = async () => {
     if (!email) {
@@ -43,13 +37,13 @@ const ForgotPassword = () => {
         'Password reset email sent! Check your inbox.',
         ToastAndroid.SHORT
       );
-    } catch (error) {
-      if (error.code === AUTHERRORCODES?.USER_DELETED) {
+    } catch (error:any) {
+      if (error?.code == AUTHERRORCODES?.USER_DELETED) {
         ToastAndroid.show("User Not Found",10)
-      } else if (error.code === AUTHERRORCODES?.INVALID_EMAIL) {
-        Alert.alert('Error', 'Invalid email address.');
+      } else if (error?.code == AUTHERRORCODES?.INVALID_EMAIL) {
+        ToastAndroid.show( 'Invalid email address.',10);
       } else {
-        Alert.alert('Error', 'Something went wrong. Please try again later.');
+        ToastAndroid.show( 'Something went wrong. Please try again later.',10);
       }
       console.error(error);
     }

@@ -1,6 +1,6 @@
 import { images } from "./utils/Images";
 
-export const mainarr = [
+export const mainarr:any = [
   {
     name: 'Top Selling',
     productList: [
@@ -17,7 +17,7 @@ export const mainarr = [
   },
 ];
 
-export const categories = [
+export const categories:any = [
   { name: 'Hoodies', image: images.Hoddie, id: 1 },
   { name: 'Shorts', image: images.Shorts, id: 2 },
   { name: 'Shoes', image: images.Shoes, id: 3 },
@@ -25,7 +25,7 @@ export const categories = [
   { name: 'Accessories', image: images.Accessories, id: 5 },
 ];
 
-export const dropdownData = [
+export const dropdownData:any = [
   { label: 'Men', value: 'men' },
   { label: 'Women', value: 'women' },
   { label: 'Kids', value: 'kids' },

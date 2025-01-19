@@ -41,8 +41,7 @@ const CreateAccount: React.FC<CreateAccountProps> = (props) => {
 
       const user = userCredential.user;
 
-     const sentVerifymail = await user.sendEmailVerification();
-     console.log(sentVerifymail,"sentVerifymail------")
+     await user.sendEmailVerification();
 
     } catch (error:any) {
 

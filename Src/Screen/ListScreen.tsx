@@ -25,9 +25,7 @@ const ListScreen: React.FC<ListScreenProps> = (props) => {
   const renderCategoryItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={ListScreenStyle.categoryItemContainer}
-      onPress={() => {
-        console.log(`Clicked on ${item.name}`);
-      }}
+      onPress={() => {}}
     >
       <Image
         source={ item.image }
@@ -47,7 +45,7 @@ const ListScreen: React.FC<ListScreenProps> = (props) => {
       <FlatList
         data={categoriesData}
         renderItem={renderCategoryItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => index?.toString()}
         showsVerticalScrollIndicator={false}
       />
       </View>

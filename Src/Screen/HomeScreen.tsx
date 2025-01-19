@@ -12,6 +12,7 @@ import { categories, dropdownData, mainarr } from '../StaticData';
 import { HomeScreenStyle } from '../Style/HomeScreenStyle';
 import HorizontalList from '../Component/HorizontalList';
 import CategoryListComman from '../Component/CategoryListComman';
+import colors from '../utils/Colors';
 
 
 const HomeScreen = () => {
@@ -24,7 +25,6 @@ const HomeScreen = () => {
 
   const handleDropdownChange = (item: { label: string; value: string }) => {
     setSelectedDropdownValue(item.value);
-    console.log('Selected:', item);
   };
 
   const renderHorizontalList = (productList: any[]) => (
@@ -37,7 +37,7 @@ const HomeScreen = () => {
       priceStyle={HomeScreenStyle.productPrice}
       iconName="heart-outline"
       iconSize={25}
-      iconStyle={{ color: '#000' }}
+      iconStyle={{ color: colors.black}}
     />
   );
 

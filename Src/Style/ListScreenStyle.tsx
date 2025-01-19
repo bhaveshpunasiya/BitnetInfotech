@@ -8,7 +8,6 @@ export const ListScreenStyle = StyleSheet.create({
       backgroundColor: colors.white,
     },
     childContainer:{
-    //   marginHorizontal:horizontalScale( 24),
       marginTop:verticalScale(40),
       justifyContent:"center",
       paddingHorizontal:horizontalScale(24)

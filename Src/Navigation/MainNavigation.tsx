@@ -11,29 +11,13 @@ import BottomNavigation from './BottomNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommanActivityIndicator from '../Component/CommanActivityIndicator';
 import ListScreen from '../Screen/ListScreen';
+import { useSelector } from 'react-redux';
 
 const Stack = createStackNavigator<any>();
 
 const MainNavigation = () => {
-  const [login, setLogin] = useState<string | null>(null); 
-  const[load,setLoad] =  useState(false)
-  const getLoginInfo = async () => {
-    setLoad(true)
-    try {
-      const value = await AsyncStorage.getItem('isLogin');
-      setLogin(value); 
-    } catch (e) {
-      console.error('Error fetching login info:', e);
-    }
-    finally{
-      setLoad(false)
-    }
-  };
-
-  useEffect(() => {
-    getLoginInfo();
-  }, []);
-
+  // const [login, setLogin] = useState<string | null>(null); 
+  const login = useSelector((state:any)=>state.auth.isLoggedIn)
 
   return (
     <NavigationContainer>
@@ -41,7 +25,7 @@ const MainNavigation = () => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName={login === null ? 'LoginScreen':'BottomNavigation' }
+        initialRouteName={login  ? 'BottomNavigation':'LoginScreen' }
         // initialRouteName={'BottomNavigation' }
       >
         <Stack.Screen name="LoginScreen" component={LoginScreen} />

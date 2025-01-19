@@ -11,11 +11,14 @@ import auth from '@react-native-firebase/auth';
 import { EmailRegex } from '../utils/EmailRegex';
 import { AUTHERRORCODES } from '../utils/FirebaseMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { loginReq } from '../Store/Slices/authSlice';
 
 interface LoginProps {}
 
 const LoginScreen: React.FC<LoginProps> = (props) => {
   const navigation = useNavigation<any>();
+  const dispatch = useDispatch()
   const [isPress, setIsPress] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState<string>('');
@@ -60,6 +63,7 @@ const LoginScreen: React.FC<LoginProps> = (props) => {
       ]
     });
     await AsyncStorage.setItem('isLogin', "true");
+    dispatch(loginReq())
   }
   const handleEmailBtn = () => {
     const EmaiIsValid = EmailRegex(email)

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown'; // Correct import
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Correct icon import
+import { Dropdown } from 'react-native-element-dropdown'; 
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import colors from '../utils/Colors';
 import { horizontalScale, moderateScale } from '../utils/scaling';
 

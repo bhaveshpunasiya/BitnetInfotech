@@ -13,6 +13,7 @@ import { AUTHERRORCODES } from '../utils/FirebaseMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { loginReq } from '../Store/Slices/authSlice';
+import { GoogleSignin,User } from '@react-native-google-signin/google-signin';
 
 interface LoginProps {}
 
@@ -85,9 +86,33 @@ const LoginScreen: React.FC<LoginProps> = (props) => {
       });
   }
 
-  const handleSignUpWithGoogle = ()=>{
-    console.log("handleSignUpWithGoogle")
-  }
+  const handleSignUpWithGoogle = async () => {
+    try {
+      GoogleSignin.configure({
+        offlineAccess: false,
+        webClientId: "357639530175-lgb1hi8uu86a1ngbh8jsm51p5mntb1ff.apps.googleusercontent.com",
+        scopes: ["profile", "email"],
+      });
+  
+      await GoogleSignin.hasPlayServices();
+  
+      const user: User = await GoogleSignin.signIn();
+  
+      const { idToken } = user;
+      if (!idToken) {
+        throw new Error('idToken is missing from Google Sign-In response');
+      }
+  
+      const googleCredentials = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredentials);
+  
+      // console.log("User signed in successfully");
+      IsUser();
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+    }
+  };
+
 
   return (
     <SafeAreaView style={LoginScreenStyle.container}>
